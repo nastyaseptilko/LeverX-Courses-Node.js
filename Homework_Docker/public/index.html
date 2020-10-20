@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Homework</title>
+    <meta charset="utf-8" />
+    <style>
+        form{
+            background: rgba(139, 184, 145, 0.99);
+            border: solid 0.5px black;
+            font-family: 'Century Gothic';
+            font-size: 1.5rem;
+        }
+        input{
+            font-size: 1.5rem;
+        }
+        button{
+            width: 150px;
+            height: 40px;
+            background: lightblue;
+        }
+    </style>
+</head>
+<body>
+<h1>Enter the data:</h1>
+<form name="addNewUser" >
+    <label>Name:</label></br>
+    <input type="text" name="userName" /></br></br>
+    <label>Phone:</label></br>
+    <input type="number" name="userPhone" /></br></br>
+    <button type="submit" onclick="addUser()">Submit</button>
+</form>
+
+<div id="listUsers"></div>
+<button onclick="getAllUsers()">Get all users</button>
+
+<script >
+    function getAllUsers() {
+        let options ={
+            method:'GET', headers:{'Content-Type':'application/json',},
+        };
+        fetch ('/users',options)
+            .then(response => response.json())
+            .then(responseJson => {
+                 document.getElementById('listUsers').innerText = JSON.stringify(responseJson, null, '  ');
+        })
+    }
+
+    function addUser() {
+        let options ={
+            method:'POST', headers:{'Content-Type':'application/json',},
+            body: JSON.stringify({
+                name: document.getElementsByName('userName')[0].value,
+                phone: document.getElementsByName('userPhone')[0].value
+            })
+        };
+        fetch ('/addUser',options)
+            .then(async response => {
+                if(response.ok) return response.json();
+                else {alert((await response.json()).error)}
+            })
+            .catch(error => alert(error));
+    }
+
+</script>
+</body>
+</html>
